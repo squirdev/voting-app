@@ -117,6 +117,7 @@ export default function MainScene(props) {
             }
             console.log("🚀 ~ file: MainScene.js:118 ~ getAgendasAndUsers ~ userIdData:", userIdData)
             const resp = await getUser(userIdData);
+            console.log("🚀 ~ file: MainScene.js:120 ~ getAgendasAndUsers ~ resp:", resp)
 
             const partyGroup = Object.groupBy(resp.data, ({ party }) => party);
             Object.values(partyGroup)

@@ -4,6 +4,7 @@ import {
     Dialog,
     DialogBody,
     DialogFooter,
+    IconButton
 } from "@material-tailwind/react";
 import { deleteUser, updateUser } from '../services/axios';
 import { toast } from 'react-toastify';
@@ -62,8 +63,29 @@ export default function EditUser(props) {
     return (
         <div>
             <Dialog open={open} handler={handleOpen} dismiss={false} >
-                <DialogBody>
+                <DialogBody className='flex flex-row justify-between'>
                     Edit User
+                    <IconButton
+                        color="blue-gray"
+                        size="sm"
+                        variant="text"
+                        onClick={handleClose}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            className="h-5 w-5"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </IconButton>
                 </DialogBody>
                 <DialogFooter className='flex flex-row items-center justify-center gap-3'>
                     <Input label="Username" defaultValue={editUserData.name} onChange={(e) => {

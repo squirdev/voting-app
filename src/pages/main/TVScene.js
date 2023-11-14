@@ -93,11 +93,11 @@ export default function TVScene(props) {
                 {
                     party?.map((item, index) => {
                         return (
-                            <div className="w-full">
+                            <div className="w-full px-[20px]">
                                 <div className="text-[20px] text-[700] text-[#2E2E2E] text-center mt-[20px]">
                                     {item}
                                 </div>
-                                <div className="w-full h-[4px] bg-[#D9D9D9] mt-[10px]">
+                                <div className="w-full h-[2px] bg-[#D9D9D9] mt-[10px] ">
                                 </div>
                                 <div className="">
                                     {
@@ -125,9 +125,9 @@ export default function TVScene(props) {
                     })
                 }
             </div > */}
-            <div className="relative flex flex-col items-center h-[150px] bg-[#aaa]">
+            <div className="relative flex flex-col items-center h-[150px]">
                 <div className="absolute bottom-0 flex flex-wrap justify-between gap-4 p-5 ">
-                    <div className="flex flex-col w-[200px] rounded-md h-[100px] bg-[#ddd] justify-center items-center">
+                    <div className="flex flex-col w-[200px] rounded-md h-[100px] bg-[#f5f5f5] justify-center items-center">
                         <p className="text-[20px] text-[#111] text-center">
                             Ukupno
                         </p>
@@ -135,7 +135,7 @@ export default function TVScene(props) {
                             {notVotedNum}
                         </p>
                     </div>
-                    <div className="flex flex-col w-[200px] rounded-md h-[100px] bg-[#0f0] justify-center items-center ">
+                    <div className="flex flex-col w-[200px] rounded-md h-[100px] bg-[#4AD527] justify-center items-center ">
                         <p className="text-[20px] text-[#111] text-center">
                             Za
                         </p>
@@ -143,7 +143,7 @@ export default function TVScene(props) {
                             {yesNum}
                         </p>
                     </div>
-                    <div className="flex flex-col w-[200px] rounded-md h-[100px] bg-[#00f] justify-center items-center ">
+                    <div className="flex flex-col w-[200px] rounded-md h-[100px] bg-[#377AFC] justify-center items-center ">
                         <p className="text-[20px] text-[#111] text-center">
                             Suzdržano
                         </p>
@@ -151,7 +151,7 @@ export default function TVScene(props) {
                             {abstrainedNum}
                         </p>
                     </div>
-                    <div className="flex flex-col w-[200px] rounded-md h-[100px] bg-[#F00] justify-center items-center ">
+                    <div className="flex flex-col w-[200px] rounded-md h-[100px] bg-[#EF4343] justify-center items-center ">
                         <p className="text-[20px] text-[#111] text-center">
                             Protiv
                         </p>

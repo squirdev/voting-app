@@ -6,7 +6,7 @@ export default function TVCustomButton({ decision, name }) {
 
     return (
         <div className='w-full'>
-            <div className="flex flex-row bg-[#ddd] items-center w-full mt-[0px] px-[10px] border-[1px] border-[#aaa]" >
+            <div className="flex flex-row  items-center w-full mt-[0px] px-[10px] " >
                 {
                     decision === 0 &&
                     <div className='flex flex-row items-center'>
