@@ -80,7 +80,7 @@ const PdfViewer: React.FC<ShowSearchPopoverButtonExampleProps> = ({ url }) => {
                             flex: 1,
                         }}
                     >
-                        <Viewer fileUrl={"./sample.pdf"} plugins={[searchPluginInstance, thumbnailPluginInstance]} />
+                        <Viewer fileUrl={url} plugins={[searchPluginInstance, thumbnailPluginInstance]} />
                     </div>
                 </Worker>
             </div>

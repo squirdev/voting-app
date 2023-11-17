@@ -30,7 +30,7 @@ export default function MainScene(props) {
     const [notVotedNum, setNotVotedNum] = useState(0);
     const [selectedAgenda, setSelectedAgenda] = useState([]);
     const [startedVote, setStartedVote] = useState();
-    const [isFullScreen, setIsFullScreen] = useState(false);
+    const [isFullScreen, setIsFullScreen] = useState(true);
     const [isReset, setIsReset] = useState(false);
     const [updateFlag, setUpdateFlag] = useState(false);
     const [resultOpen, setResultOpen] = useState(false);
