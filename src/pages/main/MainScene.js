@@ -30,7 +30,7 @@ export default function MainScene(props) {
     const [notVotedNum, setNotVotedNum] = useState(0);
     const [selectedAgenda, setSelectedAgenda] = useState([]);
     const [startedVote, setStartedVote] = useState();
-    const [isFullScreen, setIsFullScreen] = useState(true);
+    const [isFullScreen, setIsFullScreen] = useState(false);
     const [isReset, setIsReset] = useState(false);
     const [updateFlag, setUpdateFlag] = useState(false);
     const [resultOpen, setResultOpen] = useState(false);
@@ -182,10 +182,10 @@ export default function MainScene(props) {
 
 
     return (
-        <div className="">
-            <div className={`${isFullScreen ? 'p-[20px]' : 'p-[0px]'}  h-screen  w-full  bg-[#ddd]`} >
+        <div className="flex flex-col  h-screen ">
+            <div className={`${isFullScreen ? '' : 'p-[0px]'}  w-full h-full  bg-[#ddd]`} >
                 <div className="flex flex-col md:flex-row w-full gap-2 justify-between h-full ">
-                    {
+                    {/* {
                         isFullScreen && <div className='flex flex-col basis-1/4 bg-[#FFF] border-[2px] border-[#ccc] rounded-[8px] px-[20px] pt-[40px] overflow-y-auto'>
                             {
                                 agendas.map((item, index) => {
@@ -195,10 +195,10 @@ export default function MainScene(props) {
                                 })
                             }
                         </div>
-                    }
+                    } */}
                     <div className={`${isFullScreen ? 'md:basis-2/4' : 'basis-full'} relative w-full h-[500px] md:h-full  bg-[#FFF] border-[2px] border-[#ccc] rounded-[8px]`} >
                         {/* <PdfViewerComponent className="h-full" document={"http://45.84.0.116:5005/api/pdf?agenda=" + selectedIndex} /> */}
-                        <PdfViewer url={"http://45.84.0.116:5005/api/pdf?agenda=" + selectedIndex} />
+                        <PdfViewer url={"http://45.84.0.116:5005/api/pdf?agenda=0"} />
                         <div className="absolute bottom-5 right-10">
                             <button onClick={() => {
                                 setIsFullScreen(!isFullScreen)
@@ -207,7 +207,7 @@ export default function MainScene(props) {
                             </button>
                         </div>
                     </div>
-                    {
+                    {/* {
                         isFullScreen &&
                         <div className="relative flex flex-col items-center basis-1/4  border-[2px] border-[#ccc] rounded-[8px] bg-[#fff]  p-[20px]">
                             <div className="flex flex-row w-full justify-between bg-[#f5f5f5] rounded-[20px] p-[10px]">
@@ -289,7 +289,7 @@ export default function MainScene(props) {
                                 </div>
                             }
                         </div>
-                    }
+                    } */}
                 </div>
             </div>
             <CloseAlert open={adminOpen} handleOpen={sendVoteStart} handleClose={sendVoteClose} />

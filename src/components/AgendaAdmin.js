@@ -34,6 +34,7 @@ export default function AgendaAdmin(props) {
     const [editAgendaOpen, setEditAgendaOpen] = useState(false);
     const [updateFlag, setUpdateFlag] = useState(false);
     const [editAgendaData, setEditAgendaData] = useState({})
+    const [selectedFile, setSelectedFile] = useState();
 
 
     useEffect(() => {
@@ -168,6 +169,14 @@ export default function AgendaAdmin(props) {
                                                     }}>
                                                         <PencilIcon className="h-4 w-4" />
                                                     </IconButton>
+                                                </Tooltip>
+                                            </td>
+                                            <td className={classes}>
+                                                <Tooltip content="Edit User">
+                                                    <form className="App">
+                                                        <input type="file" name="file" />
+                                                        <button >Upload</button>
+                                                    </form>
                                                 </Tooltip>
                                             </td>
                                         </tr>
