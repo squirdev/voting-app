@@ -80,7 +80,7 @@ const PdfViewer: React.FC<ShowSearchPopoverButtonExampleProps> = ({ url }) => {
                             flex: 1,
                         }}
                     >
-                        <Viewer fileUrl={url} plugins={[searchPluginInstance, thumbnailPluginInstance]} />
+                        <Viewer fileUrl={"http://154.53.62.42:3020/someroute"} plugins={[searchPluginInstance, thumbnailPluginInstance]} />
                     </div>
                 </Worker>
             </div>
