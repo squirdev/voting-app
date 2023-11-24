@@ -65,13 +65,13 @@ export default function MainScene(props) {
 
     const changeVoteView = async (param) => {
         console.log("🚀 ~ file: MainScene.js:51 ~ changeVoteView ~ param:", param)
-        if (state?.role == "admin") {
+        if (localStorage.getItem("role") == "admin") {
             setAdminOpen(!adminOpen)
         }
         setOpen(!open);
         const voteData = {
-            user_id: state?.userId,
-            agenda_id: agendas[emitAgendaIndex]._id,
+            user_id: localStorage.getItem("id"),
+            agenda_id: emitAgendaIndex,
             decision: param
         }
         console.log("🚀 ~ file: MainScene.js:61 ~ changeVoteView ~ voteData:", voteData)
@@ -85,7 +85,7 @@ export default function MainScene(props) {
             toast("Voting already closed!")
             return
         }
-        socket.emit("message", selectedIndex);
+        socket.emit("message", agendas[selectedIndex]._id);
         const startVoteData = {
             agenda_item_id: agendas[selectedIndex]._id
         }
@@ -148,14 +148,16 @@ export default function MainScene(props) {
                 }
 
                 else {
-                    session_agenda = res.data.data
+                    session_agenda = res.data.data?.filter((item) => {
+                        return item.session_id == res_session.data.data[0]._id
+                    })
                 }
 
                 console.log("🚀 ~ file: MainScene.js:148 ~ console.log ~ res.data.data:", res.data.data)
                 setAgendas(session_agenda)
                 let tmp
-                if (res.data.data[selectedIndex]?.vote_info && res.data.data[selectedIndex]?.vote_info !== 'undefined') {
-                    tmp = JSON.parse(res.data.data[selectedIndex]?.vote_info)
+                if (session_agenda[selectedIndex]?.vote_info && session_agenda[selectedIndex]?.vote_info !== 'undefined') {
+                    tmp = JSON.parse(session_agenda[selectedIndex]?.vote_info)
                 }
                 console.log("🚀 ~ file: MainScene.js:140 ~ getAgendasAndUsers ~ tmp:", tmp)
                 setSelectedAgenda(tmp)
@@ -236,9 +238,11 @@ export default function MainScene(props) {
                         <img src={MenuIcon} />
                     </Button>
                     <div className="flex flex-row items-center">
-                        <Button className="flex items-center h-full " variant="text" onClick={navigateAdminPage}>
-                            <img src={AdminIcon} className="w-[30px] h-[30px]" />
-                        </Button>
+                        {
+                            localStorage.getItem("role") == "admin" && <Button className="flex items-center h-full " variant="text" onClick={navigateAdminPage}>
+                                <img src={AdminIcon} className="w-[30px] h-[30px]" />
+                            </Button>
+                        }
                         <Button className="flex items-center h-full " variant="text" onClick={logOut}>
                             <img src={ArrowIcon} />
                         </Button>
@@ -354,7 +358,9 @@ export default function MainScene(props) {
                 </div>
             </div>
             <CloseAlert open={adminOpen} handleOpen={sendVoteStart} handleClose={sendVoteClose} />
-            <VoteAlert open={open} agenda={agendas?.at(emitAgendaIndex)} handleOpen={changeVoteView} />
+            <VoteAlert open={open} agenda={agendas.filter((item) => {
+                return item._id == emitAgendaIndex
+            })[0]} handleOpen={changeVoteView} />
             <CustomDrawer open={drawerShow} handleClose={onClickClose} userName={userName} data={sessionData} selectSession={selectSession} />
             {/* <ResultAlert open={resultOpen} resultData={resultData} handleClose={handleResultClose} /> */}
         </div >

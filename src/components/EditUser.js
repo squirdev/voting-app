@@ -52,7 +52,7 @@ export default function EditUser(props) {
     useEffect(() => {
         setUserName(editUserData.name)
         setUserEmail(editUserData.email)
-        setUserCity(editUserData.city)
+        setUserCity(localStorage.getItem("city"))
         setUserParty(editUserData.party)
         setUserRole(editUserData.role)
         setUserPassword(editUserData.password)
@@ -99,7 +99,7 @@ export default function EditUser(props) {
                         setUserPassword(e.target.value);
                         setWarningMsg("")
                     }} />
-                    <Input label="City" defaultValue={editUserData.city} onChange={(e) => {
+                    <Input label="City" disabled defaultValue={editUserData.city} onChange={(e) => {
                         setUserCity(e.target.value);
                         setWarningMsg("")
                     }} />

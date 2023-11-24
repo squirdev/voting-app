@@ -21,6 +21,7 @@ export default function LoginScene() {
             localStorage.setItem("role", res.data.role);
             localStorage.setItem("id", res.data.id);
             localStorage.setItem("userName", res.data.name);
+            localStorage.setItem("city", res.data.city);
             navigate("/main", {
                 state: { role: res.data.role, userId: res.data.id, userName: res.data.name, token: res.data.token }
             })

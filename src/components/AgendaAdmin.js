@@ -13,9 +13,11 @@ import { useEffect, useState } from "react";
 import { getAgenda, getSession } from "../services/axios";
 import AddAgenda from "./AddAgenda";
 import EditAgenda from "./EditAgenda";
+import { useNavigate } from "react-router-dom";
 
 export default function AgendaAdmin(props) {
     const TABLE_HEAD = ["Name", "Pdf", "State", "Session", "Edit Agenda"];
+    const navigate = useNavigate()
 
     const [tableData, setTableData] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0)
@@ -30,12 +32,16 @@ export default function AgendaAdmin(props) {
 
     useEffect(() => {
         const getAgendaList = async () => {
-            let res = await getAgenda();
-            setTableData(res.data.data);
-            console.log("🚀 ~ file: AdminScene.js:92 ~ getAgendaList ~ res:", res)
-            let res_session = await getSession();
-            console.log("🚀 ~ file: AgendaAdmin.js:46 ~ getAgendaList ~ res_session:", res_session.data.data)
-            setSession(res_session.data.data)
+            try {
+                let res = await getAgenda();
+                setTableData(res.data.data);
+                console.log("🚀 ~ file: AdminScene.js:92 ~ getAgendaList ~ res:", res)
+                let res_session = await getSession();
+                console.log("🚀 ~ file: AgendaAdmin.js:46 ~ getAgendaList ~ res_session:", res_session.data.data)
+                setSession(res_session.data.data)
+            } catch (error) {
+                navigate("/")
+            }
         }
         getAgendaList()
     }, [addAgendaOpen, editAgendaOpen])

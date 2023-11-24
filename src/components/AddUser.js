@@ -5,7 +5,8 @@ import {
     IconButton, Input, Option, Select
 } from '@material-tailwind/react';
 import { useEffect, useState } from 'react';
-import { createUser } from '../services/axios';
+import { createUser, getUser } from '../services/axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function AddUser(props) {
 
@@ -18,7 +19,7 @@ export default function AddUser(props) {
     const [userCity, setUserCity] = useState("");
     const [userParty, setUserParty] = useState("");
     const [warningMsg, setWarningMsg] = useState();
-
+    const navigate = useNavigate()
     const onAddUser = async () => {
 
         if (userName == "" || userEmail == "" || userPassword == "" || userRole == "" || userCity == "" || userParty == "") {
@@ -41,10 +42,23 @@ export default function AddUser(props) {
         handleClose()
     }
     useEffect(() => {
+        const getUserInfo = async () => {
+            try {
+                const userIdData = {
+                    id: localStorage.getItem("id")
+                }
+                const resp = await getUser(userIdData);
+                console.log("🚀 ~ file: AddUser.js:49 ~ getUserInfo ~ resp:", resp)
+
+            } catch (error) {
+                navigate("/")
+            }
+        }
+        getUserInfo()
         if (open) {
             setUserName('');
             setUserEmail('');
-            setUserCity('');
+            setUserCity(localStorage.getItem("city"));
             setUserParty('');
             setUserPassword('');
             setUserRole('');
@@ -94,9 +108,10 @@ export default function AddUser(props) {
                         setUserPassword(e.target.value);
                         setWarningMsg("")
                     }} />
-                    <Input label="City" onChange={(e) => {
+                    <Input disabled label={localStorage.getItem("city")} onChange={(e) => {
                         setUserCity(e.target.value);
                         setWarningMsg("")
+
                     }} />
                     <Select label="Role"
                         value={userRole}

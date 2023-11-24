@@ -24,6 +24,7 @@ export default function EditAgenda(props) {
             setWarningMsg("Please input agenda name field!")
             return;
         }
+
         const data = new FormData();
         data.append('file', selectedFile);
         data.append("agendaName", agendaName)
@@ -94,7 +95,7 @@ export default function EditAgenda(props) {
                         {
                             session?.map((item) => {
 
-                                return <Option value={item._id}>{item.name}</Option>
+                                return <Option key={item._id} value={item._id}>{item.name}</Option>
 
                             })
                         }
