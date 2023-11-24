@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import LockSvg from "../assets/Lock.svg"
+import LockSvg from "../assets/Lock.svg";
 
 export default function CustomButton({ selected, onClick, name, index, locked }) {
 

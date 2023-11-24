@@ -1,11 +1,4 @@
-import { Button } from '@material-tailwind/react';
-import { useState, useEffect } from 'react';
-import {
-    Dialog,
-    DialogHeader,
-    DialogBody,
-    DialogFooter,
-} from "@material-tailwind/react";
+import { Button, Dialog, DialogFooter, DialogHeader } from '@material-tailwind/react';
 
 export default function VoteAlert(props) {
 

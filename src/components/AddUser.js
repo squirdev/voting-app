@@ -1,13 +1,11 @@
-import { Button, Input, Typography } from '@material-tailwind/react';
 import {
-    Dialog,
+    Button, Dialog,
     DialogBody,
     DialogFooter,
-    IconButton,
-} from "@material-tailwind/react";
-import { useState, useEffect } from 'react';
+    IconButton, Input, Option, Select
+} from '@material-tailwind/react';
+import { useEffect, useState } from 'react';
 import { createUser } from '../services/axios';
-import { toast } from "react-toastify";
 
 export default function AddUser(props) {
 
@@ -100,10 +98,14 @@ export default function AddUser(props) {
                         setUserCity(e.target.value);
                         setWarningMsg("")
                     }} />
-                    <Input label="Role" onChange={(e) => {
-                        setUserRole(e.target.value);
-                        setWarningMsg("")
-                    }} />
+                    <Select label="Role"
+                        value={userRole}
+                        onChange={(e) => {
+                            setUserRole(e)
+                        }}>
+                        <Option value="admin">Admin</Option>
+                        <Option value="user" >User</Option>
+                    </Select>
                     <Input label="Party" onChange={(e) => {
                         setUserParty(e.target.value);
                         setWarningMsg("")

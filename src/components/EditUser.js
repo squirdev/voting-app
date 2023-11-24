@@ -1,13 +1,12 @@
-import { Button, Input, Typography } from '@material-tailwind/react';
-import { useState, useEffect } from 'react';
 import {
-    Dialog,
+    Button, Dialog,
     DialogBody,
     DialogFooter,
-    IconButton
-} from "@material-tailwind/react";
-import { deleteUser, updateUser } from '../services/axios';
+    IconButton, Input, Option, Select
+} from '@material-tailwind/react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { deleteUser, updateUser } from '../services/axios';
 
 export default function EditUser(props) {
 
@@ -104,10 +103,14 @@ export default function EditUser(props) {
                         setUserCity(e.target.value);
                         setWarningMsg("")
                     }} />
-                    <Input label="Role" defaultValue={editUserData.role} onChange={(e) => {
-                        setUserRole(e.target.value);
-                        setWarningMsg("")
-                    }} />
+                    <Select label="Role"
+                        value={userRole}
+                        onChange={(e) => {
+                            setUserRole(e)
+                        }}>
+                        <Option value="admin">Admin</Option>
+                        <Option value="user" >User</Option>
+                    </Select>
                     <Input label="Party" defaultValue={editUserData.party} onChange={(e) => {
                         setUserParty(e.target.value);
                         setWarningMsg("")

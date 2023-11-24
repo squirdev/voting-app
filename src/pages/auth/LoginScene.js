@@ -15,9 +15,14 @@ export default function LoginScene() {
             password: password
         }
         const res = await signInUser(signInData)
-        if (res.success) {
+        console.log("🚀 ~ file: LoginScene.js:18 ~ toMainScene ~ res:", res)
+        if (res.data.success) {
+            localStorage.setItem("token", res.data.token);
+            localStorage.setItem("role", res.data.role);
+            localStorage.setItem("id", res.data.id);
+            localStorage.setItem("userName", res.data.name);
             navigate("/main", {
-                state: { role: res.role, userId: res.id }
+                state: { role: res.data.role, userId: res.data.id, userName: res.data.name, token: res.data.token }
             })
         }
     }

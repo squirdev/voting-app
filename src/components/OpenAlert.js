@@ -1,9 +1,8 @@
-import { Button } from '@material-tailwind/react';
 import {
-    Dialog,
+    Button, Dialog,
     DialogBody,
-    DialogFooter,
-} from "@material-tailwind/react";
+    DialogFooter
+} from '@material-tailwind/react';
 
 export default function OpenAlert(props) {
 

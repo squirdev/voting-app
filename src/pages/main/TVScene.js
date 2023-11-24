@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getUserById, getAgenda } from "../../services/axios";
 import TVCustomButton from "../../components/TVCustomButton";
+import { getAgenda, getUserById } from "../../services/axios";
 import { socket } from '../../utils/socket';
 
 export default function TVScene(props) {
@@ -24,14 +24,9 @@ export default function TVScene(props) {
             const cityData = {
                 city: param.handle
             }
-            console.log("🚀 ~ file: TVScene.js:26 ~ getUserListByCity ~ cityData.param:", param.handle)
             let res = await getUserById(cityData);
-            setUserList(res.data)
-            console.log("🚀 ~ file: TVScene.js:15 ~ getUserListByCity ~ res:", res)
-            console.log("🚀 ~ file: TVScene.js:16 ~ useEffect ~ res:", res)
-
-            const partyGroup = Object.groupBy(res.data, ({ party }) => party);
-            console.log("🚀 ~ file: TVScene.js:23 ~ getUserListByCity ~ partyGroup:", partyGroup)
+            setUserList(res.data.data)
+            const partyGroup = Object.groupBy(res.data.data, ({ party }) => party);
             Object.values(partyGroup)
             setParty(Object.keys(partyGroup))
             setUsers(Object.values(partyGroup))
@@ -49,8 +44,8 @@ export default function TVScene(props) {
         const getAgendasAndUsers = async () => {
             const res = await getAgenda();
             let tmp
-            if (res.data[emitAgendaIndex]?.vote_info && res.data[emitAgendaIndex]?.vote_info !== 'undefined') {
-                tmp = JSON.parse(res.data[emitAgendaIndex]?.vote_info)
+            if (res.data.data[emitAgendaIndex]?.vote_info && res.data.data[emitAgendaIndex]?.vote_info !== 'undefined') {
+                tmp = JSON.parse(res.data.data[emitAgendaIndex]?.vote_info)
             }
             setSelectedAgenda(tmp)
             if (tmp == null) {

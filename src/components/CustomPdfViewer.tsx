@@ -25,10 +25,10 @@
 //     )
 // }
 
-import * as React from 'react';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import { searchPlugin } from '@react-pdf-viewer/search';
 import { thumbnailPlugin } from '@react-pdf-viewer/thumbnail';
+import * as React from 'react';
 
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/search/lib/styles/index.css';
@@ -47,7 +47,7 @@ const PdfViewer: React.FC<ShowSearchPopoverButtonExampleProps> = ({ url }) => {
     const { Thumbnails } = thumbnailPluginInstance;
     return (
         <div style={{ height: '100%' }}>
-            <div style={{
+            {/* <div style={{
                 alignItems: 'center',
                 backgroundColor: '#eeeeee',
                 borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
@@ -55,7 +55,7 @@ const PdfViewer: React.FC<ShowSearchPopoverButtonExampleProps> = ({ url }) => {
                 padding: '4px',
             }}>
                 <ShowSearchPopoverButton />
-            </div>
+            </div> */}
             <div
                 className="rpv-core__viewer"
                 style={{
@@ -66,7 +66,7 @@ const PdfViewer: React.FC<ShowSearchPopoverButtonExampleProps> = ({ url }) => {
                 }}
             >
                 <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
-                    <div
+                    {/* <div
                         style={{
                             borderRight: '1px solid rgba(0, 0, 0, 0.3)',
                             overflow: 'auto',
@@ -74,13 +74,13 @@ const PdfViewer: React.FC<ShowSearchPopoverButtonExampleProps> = ({ url }) => {
                         }}
                     >
                         <Thumbnails />
-                    </div>
+                    </div> */}
                     <div
                         style={{
                             flex: 1,
                         }}
                     >
-                        <Viewer fileUrl={"http://154.53.62.42:3020/someroute"} plugins={[searchPluginInstance, thumbnailPluginInstance]} />
+                        <Viewer fileUrl={url} plugins={[searchPluginInstance]} />
                     </div>
                 </Worker>
             </div>

@@ -1,9 +1,4 @@
 import { Button } from '@material-tailwind/react';
-import {
-    Dialog,
-    DialogBody,
-    DialogFooter,
-} from "@material-tailwind/react";
 
 export default function CloseAlert(props) {
 

@@ -10,34 +10,33 @@ import {
     Typography
 } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
-import { setAuthorization } from "../services/api";
-import { getAllUser } from "../services/axios";
-import AddUser from "./AddUser";
-import EditUser from "./EditUser";
+import { getSession } from "../services/axios";
+import AddSession from "./AddSession";
+import EditSession from "./EditSession";
 
-export default function UserAdmin(props) {
-
-
-    const TABLE_HEAD = ["User", "Email", "Password", "City", "Party", "Role", "Edit User"];
+export default function SessionAdmin(props) {
+    const TABLE_HEAD = ["Name", "Date", "Edit Session"];
 
     const [tableData, setTableData] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0)
 
 
-    const [addUserOpen, setAddUserOpen] = useState(false);
-    const [editUserOpen, setEditUserOpen] = useState(false);
-    const [editUserData, setEditUserData] = useState({})
+    const [addSessionOpen, setAddSessionOpen] = useState(false);
+    const [editSessionOpen, setEditSessionOpen] = useState(false);
+    const [updateFlag, setUpdateFlag] = useState(false);
+    const [editSessionData, setEditSessionData] = useState({})
+    const [selectedFile, setSelectedFile] = useState();
 
 
     useEffect(() => {
-        setAuthorization(localStorage.getItem("token"))
-        const getAllUserList = async () => {
-            let res = await getAllUser();
+        const getSessionList = async () => {
+            let res = await getSession();
+            console.log("🚀 ~ file: SessionAdmin.js:45 ~ getSessionList ~ res:", res)
             setTableData(res.data.data);
-            console.log("🚀 ~ file: AdminScene.js:92 ~ getAllUserList ~ res:", res)
         }
-        getAllUserList()
-    }, [addUserOpen, editUserOpen])
+        getSessionList()
+    }, [addSessionOpen, editSessionOpen])
+
 
     return (
         <div className="p-[20px]">
@@ -46,18 +45,18 @@ export default function UserAdmin(props) {
                     <div className="mb-8 flex items-center justify-between gap-8">
                         <div>
                             <Typography variant="h5" color="blue-gray">
-                                User list
+                                Session list
                             </Typography>
                             <Typography color="gray" className="mt-1 font-normal">
-                                Manage information about all users
+                                Manage information about all Sessions
                             </Typography>
                         </div>
                         <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
                             {/* <Button variant="outlined" size="sm">
                                 view all
                             </Button> */}
-                            <Button className="flex items-center gap-3" size="sm" onClick={() => setAddUserOpen(true)}>
-                                <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add member
+                            <Button className="flex items-center gap-3" size="sm" onClick={() => setAddSessionOpen(true)}>
+                                <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add session
                             </Button>
                         </div>
                     </div>
@@ -103,14 +102,14 @@ export default function UserAdmin(props) {
                             {tableData.filter((item, index) => {
                                 return currentIndex * 5 <= index && index < currentIndex * 5 + 5
                             }).map(
-                                ({ name, email, role, password, party, city, _id }, index) => {
+                                ({ name, date, _id }, index) => {
                                     const isLast = index === tableData.length - 1;
                                     const classes = isLast
                                         ? "p-4"
                                         : "p-4 border-b border-blue-gray-50";
 
                                     return (
-                                        <tr key={_id}>
+                                        <tr key={index}>
                                             <td className={classes}>
                                                 <div className="flex items-center gap-3">
 
@@ -133,66 +132,40 @@ export default function UserAdmin(props) {
                                                         color="blue-gray"
                                                         className="font-normal"
                                                     >
-                                                        {email}
+                                                        {date}
                                                     </Typography>
                                                 </div>
                                             </td>
-                                            <td className={classes}>
-                                                <div className="w-max">
 
-                                                    <Typography
-                                                        variant="small"
-                                                        color="blue-gray"
-                                                        className="font-normal"
-                                                    >
-                                                        {password}
-                                                    </Typography>
-                                                </div>
-                                            </td>
-                                            <td className={classes}>
-                                                <Typography
-                                                    variant="small"
-                                                    color="blue-gray"
-                                                    className="font-normal"
-                                                >
-                                                    {city}
-                                                </Typography>
-                                            </td>
-                                            <td className={classes}>
-                                                <Typography
-                                                    variant="small"
-                                                    color="blue-gray"
-                                                    className="font-normal"
-                                                >
-                                                    {party}
-                                                </Typography>
-                                            </td> <td className={classes}>
-                                                <Typography
-                                                    variant="small"
-                                                    color="blue-gray"
-                                                    className="font-normal"
-                                                >
-                                                    {role}
-                                                </Typography>
-                                            </td>
+
+
                                             <td className={classes}>
                                                 <Tooltip content="Edit User">
                                                     <IconButton variant="text" onClick={() => {
-                                                        setEditUserData({
+                                                        setEditSessionData({
                                                             id: _id,
                                                             name: name,
-                                                            email: email,
-                                                            password: password,
-                                                            role: role,
-                                                            city: city,
-                                                            party: party
+
                                                         })
-                                                        setEditUserOpen(true)
+                                                        setEditSessionOpen(true)
                                                     }}>
                                                         <PencilIcon className="h-4 w-4" />
                                                     </IconButton>
                                                 </Tooltip>
                                             </td>
+                                            {/* <td className={classes}>
+                                                <Tooltip content="Edit User">
+                                                    <form className="flex flex-row justify-between p-[5px]" onSubmit={handleUpload}>
+                                                        <input
+                                                            onChange={handleFileChange}
+                                                            // class="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal text-neutral-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-200 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:file:bg-neutral-700 dark:file:text-neutral-100 dark:focus:border-primary"
+                                                            type="file"
+                                                        />
+
+                                                        <Button onClick={(e) => handleUpload(e, _id)}>Upload</Button>
+                                                    </form>
+                                                </Tooltip>
+                                            </td> */}
                                         </tr>
                                     );
                                 },
@@ -221,8 +194,8 @@ export default function UserAdmin(props) {
                     </div>
                 </CardFooter>
             </Card>
-            <AddUser open={addUserOpen} handleClose={() => setAddUserOpen(false)} />
-            <EditUser open={editUserOpen} handleClose={() => setEditUserOpen(false)} editUserData={editUserData} />
+            <AddSession open={addSessionOpen} handleClose={() => setAddSessionOpen(false)} />
+            <EditSession open={editSessionOpen} handleClose={() => setEditSessionOpen(false)} editSessionData={editSessionData} />
         </div >
     )
 }

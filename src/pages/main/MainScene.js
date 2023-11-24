@@ -1,22 +1,25 @@
-import { useEffect, useState } from "react";
-import { useAsyncError, useLocation } from "react-router-dom";
-import { socket } from '../../utils/socket';
-import VoteAlert from "../../components/VoteAlert";
-import { closeVote, getAgenda, getUser, getVote, handleVote, resetVote, startVote } from "../../services/axios";
 import { Button } from "@material-tailwind/react";
-import OpenAlert from "../../components/OpenAlert";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import AdminIcon from "../../assets/Admin.svg";
+import ArrowIcon from "../../assets/Arrow_Right.svg";
+import ZoomSvg from '../../assets/Zoom.svg';
+import MenuIcon from "../../assets/menu.svg";
 import CloseAlert from "../../components/CloseAlert";
 import CustomButton from "../../components/CustomButton";
-import UserComponent from "../../components/UserComponent";
-import { toast } from "react-toastify";
-import ZoomSvg from '../../assets/Zoom.svg'
-import ResultAlert from "../../components/ResultAlert";
 import PdfViewer from "../../components/CustomPdfViewer";
-
+import CustomDrawer from "../../components/Drawer";
+import UserComponent from "../../components/UserComponent";
+import VoteAlert from "../../components/VoteAlert";
+import { setAuthorization } from "../../services/api";
+import { closeVote, getAgenda, getSession, getUser, handleVote, resetVote, startVote } from "../../services/axios";
+import { socket } from '../../utils/socket';
 
 export default function MainScene(props) {
     // const { navigation } = props;
     const { state } = useLocation();
+    const navigate = useNavigate();
     const [agendas, setAgendas] = useState([]);
     const [party, setParty] = useState([]);
     const [users, setUsers] = useState([]);
@@ -34,6 +37,11 @@ export default function MainScene(props) {
     const [isReset, setIsReset] = useState(false);
     const [updateFlag, setUpdateFlag] = useState(false);
     const [resultOpen, setResultOpen] = useState(false);
+    const [drawerShow, setDrawerShow] = useState(false);
+    const [userName, setUserName] = useState("");
+    const [sessionData, setSessionData] = useState();
+    const [selectedSessionId, setSelectedSessionId] = useState();
+
     // useEffect(() => {
     //     setInterval(function greet() {
     //         socket.emit("vote_update", "message")
@@ -113,42 +121,69 @@ export default function MainScene(props) {
     useEffect(() => {
         const getAgendasAndUsers = async () => {
             const userIdData = {
-                id: state?.userId
+                id: localStorage.getItem("id")
             }
-            console.log("🚀 ~ file: MainScene.js:118 ~ getAgendasAndUsers ~ userIdData:", userIdData)
-            const resp = await getUser(userIdData);
-            console.log("🚀 ~ file: MainScene.js:120 ~ getAgendasAndUsers ~ resp:", resp)
+            setAuthorization(localStorage.getItem("token"))
+            setUserName(localStorage.getItem("userName"))
+            try {
+                const resp = await getUser(userIdData);
+                console.log("🚀 ~ file: MainScene.js:127 ~ getAgendasAndUsers ~ resp:", resp)
+                const partyGroup = Object.groupBy(resp.data.data, ({ party }) => party);
+                Object.values(partyGroup)
+                setParty(Object.keys(partyGroup))
+                setUsers(Object.values(partyGroup))
 
-            const partyGroup = Object.groupBy(resp.data, ({ party }) => party);
-            Object.values(partyGroup)
-            setParty(Object.keys(partyGroup))
-            setUsers(Object.values(partyGroup))
 
-            const res = await getAgenda();
-            setAgendas(res.data)
-            let tmp
-            if (res.data[selectedIndex]?.vote_info && res.data[selectedIndex]?.vote_info !== 'undefined') {
-                tmp = JSON.parse(res.data[selectedIndex]?.vote_info)
+                let res_session = await getSession();
+                console.log("🚀 ~ file: MainScene.js:164 ~ getAgendasAndUsers ~ res_session:", res_session)
+                setSessionData(res_session.data.data)
+
+
+                const res = await getAgenda();
+                let session_agenda
+                if (selectedSessionId) {
+                    session_agenda = res.data.data?.filter((item) => {
+                        return item.session_id == selectedSessionId
+                    })
+                }
+
+                else {
+                    session_agenda = res.data.data
+                }
+
+                console.log("🚀 ~ file: MainScene.js:148 ~ console.log ~ res.data.data:", res.data.data)
+                setAgendas(session_agenda)
+                let tmp
+                if (res.data.data[selectedIndex]?.vote_info && res.data.data[selectedIndex]?.vote_info !== 'undefined') {
+                    tmp = JSON.parse(res.data.data[selectedIndex]?.vote_info)
+                }
+                console.log("🚀 ~ file: MainScene.js:140 ~ getAgendasAndUsers ~ tmp:", tmp)
+                setSelectedAgenda(tmp)
+                if (tmp == null) {
+                    setYesNum(0)
+                    setNoNum(0)
+                    setAbstrainedNum(0)
+                    setNotVotedNum(0)
+                    return;
+                }
+                const result = Object.groupBy(tmp, ({ decision }) => decision);
+                console.log("🚀 ~ file: MainScene.js:150 ~ getAgendasAndUsers ~ result:", result)
+                let yes = result["1"]?.length === undefined ? 0 : result["1"]?.length;
+                let no = result["0"]?.length === undefined ? 0 : result["0"]?.length;
+                let ab = result["2"]?.length === undefined ? 0 : result["2"]?.length;
+                setYesNum(yes)
+                setNoNum(no)
+                setAbstrainedNum(ab)
+                setNotVotedNum((yes + no + ab))
+                /* get session part */
+
+
+            } catch (error) {
+                navigate("/")
             }
-            setSelectedAgenda(tmp)
-            if (tmp == null) {
-                setYesNum(0)
-                setNoNum(0)
-                setAbstrainedNum(0)
-                setNotVotedNum(0)
-                return;
-            }
-            const result = Object.groupBy(tmp, ({ decision }) => decision);
-            let yes = result["1"]?.length === undefined ? 0 : result["1"]?.length;
-            let no = result["0"]?.length === undefined ? 0 : result["0"]?.length;
-            let ab = result["2"]?.length === undefined ? 0 : result["2"]?.length;
-            setYesNum(yes)
-            setNoNum(no)
-            setAbstrainedNum(ab)
-            setNotVotedNum((yes + no + ab))
         }
         getAgendasAndUsers();
-    }, [selectedIndex, isReset, open, adminOpen, updateFlag])
+    }, [selectedIndex, isReset, open, adminOpen, updateFlag, selectedSessionId])
 
 
 
@@ -170,35 +205,61 @@ export default function MainScene(props) {
         }
     }
 
-    const handleResultClose = () => {
-        setResultOpen(false)
+    const onClickMenuItem = () => {
+        setDrawerShow(true);
     }
-    const getHeight = () => {
-        return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    };
-    useEffect(() => {
-        console.log(getHeight())
-    }, [])
 
+    const onClickClose = async () => {
+        setDrawerShow(false)
+    }
+
+
+    const navigateAdminPage = () => {
+        navigate("/admin")
+    }
+
+    const logOut = () => {
+        localStorage.setItem("token", "")
+        navigate("/")
+    }
+
+    const selectSession = (param) => {
+        setSelectedSessionId(param)
+        onClickClose()
+    }
 
     return (
-        <div className="flex flex-col  h-screen ">
-            <div className={`${isFullScreen ? '' : 'p-[0px]'}  w-full h-full  bg-[#ddd]`} >
-                <div className="flex flex-col md:flex-row w-full gap-2 justify-between h-full ">
-                    {/* {
+        <div className="flex flex-col  h-screen">
+            <div className={`${isFullScreen ? '' : ''} h-full  w-full bg-[#ddd]`} >
+                <div className="h-[5%] w-full bg-[#ddd] flex items-center justify-between p-[0px]">
+                    <Button className="flex items-center  h-full ml-[5px] " variant="text" onClick={onClickMenuItem}>
+                        <img src={MenuIcon} />
+                    </Button>
+                    <div className="flex flex-row items-center">
+                        <Button className="flex items-center h-full " variant="text" onClick={navigateAdminPage}>
+                            <img src={AdminIcon} className="w-[30px] h-[30px]" />
+                        </Button>
+                        <Button className="flex items-center h-full " variant="text" onClick={logOut}>
+                            <img src={ArrowIcon} />
+                        </Button>
+                    </div>
+                </div>
+                <div className="flex flex-col md:flex-row w-full gap-2 justify-between h-full md:h-[95%] ">
+                    {
                         isFullScreen && <div className='flex flex-col basis-1/4 bg-[#FFF] border-[2px] border-[#ccc] rounded-[8px] px-[20px] pt-[40px] overflow-y-auto'>
                             {
                                 agendas.map((item, index) => {
+                                    console.log("🚀 ~ file: MainScene.js:247 ~ console.log ~ item._id:", item._id)
                                     return (
                                         <CustomButton selected={index == selectedIndex} index={index + 1} locked={agendas[index].vote_state == 2} name={item.name} onClick={() => { setSelectedIndex(index) }} >
                                         </CustomButton>)
                                 })
                             }
                         </div>
-                    } */}
+                    }
                     <div className={`${isFullScreen ? 'md:basis-2/4' : 'basis-full'} relative w-full h-[500px] md:h-full  bg-[#FFF] border-[2px] border-[#ccc] rounded-[8px]`} >
-                        {/* <PdfViewerComponent className="h-full" document={"http://45.84.0.116:5005/api/pdf?agenda=" + selectedIndex} /> */}
-                        <PdfViewer url={"http://45.84.0.116:5005/api/pdf?agenda=0"} />
+                        <PdfViewer className="" url={"http://localhost:5005/api/pdf?agenda=" + agendas[selectedIndex]?._id} />
+                        {/* <PdfViewer url={"http://45.84.0.116:5005/api/pdf?agenda=0"} /> */}
                         <div className="absolute bottom-5 right-10">
                             <button onClick={() => {
                                 setIsFullScreen(!isFullScreen)
@@ -207,7 +268,7 @@ export default function MainScene(props) {
                             </button>
                         </div>
                     </div>
-                    {/* {
+                    {
                         isFullScreen &&
                         <div className="relative flex flex-col items-center basis-1/4  border-[2px] border-[#ccc] rounded-[8px] bg-[#fff]  p-[20px]">
                             <div className="flex flex-row w-full justify-between bg-[#f5f5f5] rounded-[20px] p-[10px]">
@@ -272,13 +333,13 @@ export default function MainScene(props) {
                                 }
 
                             </div>
-                            {state?.role == "admin" &&
+                            {localStorage.getItem("role") == "admin" &&
                                 <div className="w-full h-[120px]">
 
                                 </div>
                             }
                             {
-                                state?.role == "admin" &&
+                                localStorage.getItem("role") == "admin" &&
                                 <div className='absolute bottom-0 flex flex-row gap-10 p-[10px] justify-between '>
                                     <Button className=' w-[120px] bg-[green] text-[12px]' onClick={sendVoteStart}>
                                         Otvori glasanje
@@ -289,11 +350,12 @@ export default function MainScene(props) {
                                 </div>
                             }
                         </div>
-                    } */}
+                    }
                 </div>
             </div>
             <CloseAlert open={adminOpen} handleOpen={sendVoteStart} handleClose={sendVoteClose} />
             <VoteAlert open={open} agenda={agendas?.at(emitAgendaIndex)} handleOpen={changeVoteView} />
+            <CustomDrawer open={drawerShow} handleClose={onClickClose} userName={userName} data={sessionData} selectSession={selectSession} />
             {/* <ResultAlert open={resultOpen} resultData={resultData} handleClose={handleResultClose} /> */}
         </div >
     )

@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
-import YesSvg from '../assets/Yes.svg';
-import NoSvg from '../assets/No.svg';
 import AbstainSvg from '../assets/Abstain.svg';
+import NoSvg from '../assets/No.svg';
+import YesSvg from '../assets/Yes.svg';
 
 export default function UserComponent({ decision, name }) {
 

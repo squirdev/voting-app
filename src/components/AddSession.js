@@ -2,33 +2,32 @@ import {
     Button, Dialog,
     DialogBody,
     DialogFooter,
-    IconButton, Input, Option, Select
+    IconButton, Input
 } from '@material-tailwind/react';
 import { useEffect, useState } from 'react';
-import { createAgenda, uploadFile } from '../services/axios';
+import { createSession } from '../services/axios';
 
-export default function AddAgenda(props) {
+export default function AddSession(props) {
 
-    const { open, handleOpen, handleClose, session } = props
+    const { open, handleOpen, handleClose, update } = props
 
-    const [agendaName, setAgendaName] = useState("");
-    const [selectedSession, setSelectedSession] = useState();
+    const [sessionName, setSessionName] = useState("");
+    const [agendaPdf, setAgendaPdf] = useState("");
     const [warningMsg, setWarningMsg] = useState();
     const [selectedFile, setSelectedFile] = useState();
 
     const onAddUser = async () => {
 
-        if (agendaName == "") {
-            setWarningMsg("Please input agenda name field!")
+        if (sessionName == "") {
+            setWarningMsg("Please input session name field!")
             return;
         }
 
-        const data = new FormData();
-        data.append('file', selectedFile);
-        data.append("agendaName", agendaName)
-        data.append("sessionId", selectedSession)
+        const addSessionData = {
+            sessionName: sessionName
+        }
         // Display the key/value pairs
-        await createAgenda(data)
+        await createSession(addSessionData)
 
         // let res = await createAgenda(addAgendaData);
         // if (res.status) {
@@ -38,28 +37,10 @@ export default function AddAgenda(props) {
     }
     useEffect(() => {
         if (open) {
-            setAgendaName('');
+            setSessionName('');
             // ... reset other state variables
         }
     }, [open]);
-
-
-    const handleFileChange = (e) => {
-        // define file change
-        setSelectedFile(e.target.files[0])
-        console.log("🚀 ~ file: AgendaAdmin.js:52 ~ handleFileChange ~ e.target:", e.target.files[0])
-    };
-    const handleUpload = async (event, _id) => {
-        console.log("🚀 ~ file: AgendaAdmin.js:55 ~ handleUpload ~ index:", _id)
-        event.preventDefault();
-        const data = new FormData();
-        data.append('file', selectedFile);
-        console.log("🚀 ~ file: AgendaAdmin.js:59 ~ handleUpload ~ selectedFile:", selectedFile)
-        data.append("id", _id)
-        // Display the key/value pairs
-        await uploadFile(data)
-
-    };
 
 
     return (
@@ -67,7 +48,7 @@ export default function AddAgenda(props) {
             <Dialog open={open} handler={handleOpen} dismiss={false} >
                 <DialogBody className='flex flex-row justify-between'>
                     <p className='text-[24px] text-[#000]'>
-                        Add Agenda
+                        Add Session
                     </p>
                     <IconButton
                         color="blue-gray"
@@ -92,27 +73,11 @@ export default function AddAgenda(props) {
                     </IconButton>
                 </DialogBody>
                 <DialogFooter className='flex flex-row items-center justify-center gap-3'>
-                    <Input label="Agenda Name" onChange={(e) => {
-                        setAgendaName(e.target.value);
+                    <Input label="Session Name" onChange={(e) => {
+                        setSessionName(e.target.value);
                         setWarningMsg("")
                     }} />
 
-                    <Select label="Session"
-                        // value={selectedSession}
-                        onChange={(e) => {
-                            setSelectedSession(e)
-                        }}>
-                        {
-                            session?.map((item) => {
-                                return <Option value={item._id}>{item.name}</Option>
-                            })
-                        }
-                    </Select>
-                    <input label="Pdf"
-                        type="file"
-                        className='w-full'
-
-                        onChange={handleFileChange} />
                     <div className='flex flex-col gap-5'>
                         <p className='text-[#F00]'>
                             {warningMsg}

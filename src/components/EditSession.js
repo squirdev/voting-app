@@ -2,41 +2,38 @@ import {
     Button, Dialog,
     DialogBody,
     DialogFooter,
-    IconButton, Input, Option, Select
+    IconButton, Input
 } from '@material-tailwind/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { deleteAgenda, updateAgenda } from '../services/axios';
+import { deleteSession, updateSession } from '../services/axios';
 
-export default function EditAgenda(props) {
+export default function EditSession(props) {
 
-    const { open, handleOpen, handleClose, editAgendaData, session } = props
+    const { open, handleOpen, handleClose, editSessionData } = props
 
-    const [agendaName, setAgendaName] = useState("");
-    const [agendaPdf, setAgendaPdf] = useState("");
-    const [selectedSession, setSelectedSession] = useState();
+    const [sessionName, setSessionName] = useState("");
     const [warningMsg, setWarningMsg] = useState();
     const [selectedFile, setSelectedFile] = useState();
 
     const onUpdateUser = async () => {
 
-        if (agendaName == "") {
-            setWarningMsg("Please input agenda name field!")
+        if (sessionName == "") {
+            setWarningMsg("Please input session name field!")
             return;
         }
-        const data = new FormData();
-        data.append('file', selectedFile);
-        data.append("agendaName", agendaName)
-        data.append("id", editAgendaData.id)
-        data.append("sessionId", selectedSession)
-        let res = await updateAgenda(data);
-        if (res.success)
+        const data = {
+            sessionName: sessionName,
+            id: editSessionData.id
+        }
+        let res = await updateSession(data);
+        if (res.data.success)
             toast.success("Successfully updated!")
         handleClose()
     }
 
     const onDeleteUser = async () => {
-        let res = await deleteAgenda({ id: editAgendaData.id });
+        let res = await deleteSession({ id: editSessionData.id });
         if (res.success)
             toast.success("Successfully removed!")
         console.log("🚀 ~ file: EditUser.js:46 ~ onDeleteUser ~ res:", res)
@@ -44,20 +41,14 @@ export default function EditAgenda(props) {
     }
 
     useEffect(() => {
-        setAgendaName(editAgendaData.name)
+        setSessionName(editSessionData.name)
     }, [])
-
-    const handleFileChange = (e) => {
-        // define file change
-        setSelectedFile(e.target.files[0])
-        console.log("🚀 ~ file: AgendaAdmin.js:52 ~ handleFileChange ~ e.target:", e.target.files[0])
-    };
 
     return (
         <div>
             <Dialog open={open} handler={handleOpen} dismiss={false} >
                 <DialogBody className='flex flex-row justify-between'>
-                    Edit Agenda
+                    Edit Session
                     <IconButton
                         color="blue-gray"
                         size="sm"
@@ -81,29 +72,11 @@ export default function EditAgenda(props) {
                     </IconButton>
                 </DialogBody>
                 <DialogFooter className='flex flex-row items-center justify-center gap-3'>
-                    <Input label="Agenda Name" defaultValue={editAgendaData.name} onChange={(e) => {
-                        setAgendaName(e.target.value);
+                    <Input label="Session Name" defaultValue={editSessionData.name} onChange={(e) => {
+                        setSessionName(e.target.value);
                         setWarningMsg("")
                     }} />
-                    <Select label="Session"
-                        value={selectedSession}
-                        onChange={(e) => {
-                            setSelectedSession(e)
-                        }}>
 
-                        {
-                            session?.map((item) => {
-
-                                return <Option value={item._id}>{item.name}</Option>
-
-                            })
-                        }
-                    </Select>
-                    <input label="Pdf"
-                        type="file"
-                        className='w-full'
-
-                        onChange={handleFileChange} />
                     <div className='flex flex-col gap-5'>
                         <p className='text-[#F00]'>
                             {warningMsg}
