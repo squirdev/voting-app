@@ -40,17 +40,17 @@ export default function CustomDrawer({ open, handleClose, userName, data, select
             </Typography>
             {
                 data?.map((item, index) => {
-                    return <button className="flex flex-row justify-between items-center w-full p-[5px] mt-[10px]" variant="text" onClick={() => handleSession(item._id)}>
+                    return <button key={index} className="flex flex-row justify-between items-center w-full p-[5px] mt-[10px]" variant="text" onClick={() => handleSession(item._id)}>
                         <div className="flex items-center justify-center min-w-[40px] min-h-[40px] rounded-full bg-[#ddd] border-[1px] border-[#000]">
-                            <Typography variant="text" color="black" className=" w-full  text-[20px] font-[400]" >
+                            <Typography color="black" className=" w-full  text-[20px] font-[400]" >
                                 {index}
                             </Typography>
                         </div>
                         <div className="flex flex-col w-full">
-                            <Typography variant="text" color="black" className=" w-full text-center text-[26px] font-[600]" >
+                            <Typography color="black" className=" w-full text-center text-[26px] font-[600]" >
                                 {item.name}
                             </Typography>
-                            <Typography variant="text" color="black" className=" w-full text-center text-[16px] font-[400] ">
+                            <Typography color="black" className=" w-full text-center text-[16px] font-[400] ">
                                 {convertTime(item.date)}
                             </Typography>
                         </div>

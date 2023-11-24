@@ -6,7 +6,7 @@ export default function VoteAlert(props) {
 
     return (
         <div>
-            <Dialog open={open} dismiss={false}>
+            <Dialog open={open} >
                 <DialogHeader>{agenda?.name}</DialogHeader>
                 <DialogFooter className='grid grid-cols-3 gap-5'>
                     <Button variant="gradient" color="green" onClick={() => handleOpen(1)}>

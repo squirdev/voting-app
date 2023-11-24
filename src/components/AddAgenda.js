@@ -104,7 +104,7 @@ export default function AddAgenda(props) {
                         }}>
                         {
                             session?.map((item) => {
-                                return <Option value={item._id}>{item.name}</Option>
+                                return <Option key={item._id} value={item._id}>{item.name}</Option>
                             })
                         }
                     </Select>

@@ -255,7 +255,7 @@ export default function MainScene(props) {
                                 agendas.map((item, index) => {
                                     console.log("🚀 ~ file: MainScene.js:247 ~ console.log ~ item._id:", item._id)
                                     return (
-                                        <CustomButton selected={index == selectedIndex} index={index + 1} locked={agendas[index].vote_state == 2} name={item.name} onClick={() => { setSelectedIndex(index) }} >
+                                        <CustomButton key={index} selected={index == selectedIndex} index={index + 1} locked={agendas[index].vote_state == 2} name={item.name} onClick={() => { setSelectedIndex(index) }} >
                                         </CustomButton>)
                                 })
                             }
@@ -315,7 +315,7 @@ export default function MainScene(props) {
                                 {
                                     party?.map((item, index) => {
                                         return (
-                                            <div className="w-full">
+                                            <div key={index} className="w-full">
                                                 <div className="text-[20px] text-[700] text-[#2E2E2E] text-center mt-[20px]">
                                                     {item}
                                                 </div>
@@ -323,9 +323,9 @@ export default function MainScene(props) {
                                                 </div>
                                                 <div className="w-full h-full flex flex-col">
                                                     {
-                                                        users[index].map((userItem) => {
+                                                        users[index].map((userItem, idx) => {
                                                             return (
-                                                                <UserComponent decision={getDecisionFromAgenda(userItem._id, selectedAgenda)} name={userItem.name} />
+                                                                <UserComponent key={idx} decision={getDecisionFromAgenda(userItem._id, selectedAgenda)} name={userItem.name} />
                                                             )
                                                         })
                                                     }
